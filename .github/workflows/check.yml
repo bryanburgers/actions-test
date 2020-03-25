@@ -3,8 +3,6 @@ name: Check
 on:
     push:
         branches:
-        tags-ignore:
-            - *
 
 jobs:
     build:
@@ -12,4 +10,4 @@ jobs:
 
         steps:
         - name: Hey!
-          run: echo "Hey!"
+          run: echo -e "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME\nGITHUB_EVENT_PATH=$GITHUB_EVENT_PATH\nGITHUB_REF=$GITHUB_REF"
