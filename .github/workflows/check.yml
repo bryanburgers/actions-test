@@ -4,6 +4,10 @@ on:
     push:
         branches:
             - '*'
+
+        # We tag this repo with a tag for every project when we want to
+        # release. But we really don't need to spend the time checking against
+        # all of those tags when we've already checked the commit.
         tags-ignore:
             - '*'
 
