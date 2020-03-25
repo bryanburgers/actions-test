@@ -12,6 +12,5 @@ jobs:
             - name: Environment variables
               run: echo -e "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME\nGITHUB_EVENT_PATH=$GITHUB_EVENT_PATH\nGITHUB_REF=$GITHUB_REF"
 
-        steps:
             - name: cat events
               run: cat $GITHUB_EVENT_PATH
