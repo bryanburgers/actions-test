@@ -37,3 +37,11 @@ jobs:
 
             - name: Test output
               run: echo ${{ steps.generate-log.outputs.log }}
+
+            - name: Test a multi-line output with newlines?
+              id: multi-line
+              run: |
+                  echo "::set-output name=log::one\ntwo\nthree"
+
+            - name: Test output
+              run: echo '"${{ steps.multi-line.outputs.log }}"'
