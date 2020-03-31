@@ -29,14 +29,14 @@ jobs:
             - name: Output git log
               run: git log --pretty=format:"* %s"
 
-            - name: Make git log an output?
-              id: generate-log
-              run: |
-                  output=$(git log --pretty=format:"* %s")
-                  echo "::set-output name=log::$output"
-
-            - name: Test output
-              run: echo ${{ steps.generate-log.outputs.log }}
+#            - name: Make git log an output?
+#              id: generate-log
+#              run: |
+#                  output=$(git log --pretty=format:"* %s")
+#                  echo "::set-output name=log::$output"
+#
+#            - name: Test output
+#              run: echo ${{ steps.generate-log.outputs.log }}
 
             - name: Test a multi-line output with newlines?
               id: multi-line
