@@ -41,7 +41,9 @@ jobs:
             - name: Test a multi-line output with newlines?
               id: multi-line
               run: |
-                  echo -e "::set-output name=log::'one\ntwo\nthree'"
+                  echo "::set-output name=log::one"
+                  echo "::set-output name=log::two"
+                  echo "::set-output name=log::three"
 
             - name: Test output
               run: echo '"${{ steps.multi-line.outputs.log }}"'
