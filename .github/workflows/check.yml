@@ -20,3 +20,18 @@ jobs:
 
             - name: cat events
               run: cat $GITHUB_EVENT_PATH
+
+            - name: checkout
+              uses: actions/checkout@v2
+
+            - name: Output git log
+              run: git log --pretty=format:"* %s"
+
+            - name: Make git log an output?
+              id: generate-log
+              run: |
+                  output=$(git log --pretty=format:"* %s")
+                  echo "::set-output name=log::$output"
+
+            - name: Test output
+              run: echo ${{ steps.generate-log.outputs.log
