@@ -34,4 +34,4 @@ jobs:
                   echo "::set-output name=log::$output"
 
             - name: Test output
-              run: echo ${{ steps.generate-log.outputs.log
+              run: echo ${{ steps.generate-log.outputs.log }}
