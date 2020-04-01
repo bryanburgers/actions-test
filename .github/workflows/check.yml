@@ -49,6 +49,6 @@ jobs:
             - name: Slack Notification
               uses: Ilshidur/action-slack@master
               env:
-                  SLACK_WEBHOOK: https://hooks.slack.com/services/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
+                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
               with:
                   args: 'A new Ralph version has been deployed to production.\n${{ steps.multi-line.outputs.log }}'
