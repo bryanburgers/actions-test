@@ -49,6 +49,9 @@ jobs:
             - name: Install curl, jq
               run: sudo apt-get install -y curl jq
 
+            - name: Fetch tags
+              run: git fetch --tags
+
             - name: "Generate all the things"
               run: |
                   message="Ralph $(git describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||') has been deployed to production"
