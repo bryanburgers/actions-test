@@ -46,9 +46,20 @@ jobs:
             - name: Test output
               run: echo '"${{ steps.multi-line.outputs.log }}"'
 
-            - name: Slack Notification
-              uses: Ilshidur/action-slack@master
-              env:
-                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-              with:
-                  args: "A new Ralph version has been deployed to production.\n${{ steps.multi-line.outputs.log }}"
+            - name: Install curl, jq
+              run: sudo apt-get install -y curl jq
+
+            - name: "Generate all the things"
+              run: |
+                  message="Ralph $(git describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||') has been deployed to production"
+                  echo $message | jq -R '{"message":.}' >message.json
+                  git log --pretty=format:"* %s" --no-merges HEAD~8..HEAD | grep -v "cargo-release" | jq -Rn '[inputs]|join("\n")|{"log":.}' >git-log.json
+                  jq -n --argfile m message.json --argfile l git-log.json '$m.message + "\n" + $l.log|{"text":.}' >payload.json
+                  curl -X POST --data-urlencode payload@payload.json ${{ secrets.SLACK_WEBHOOK }}
+
+#            - name: Slack Notification
+#              uses: Ilshidur/action-slack@master
+#              env:
+#                  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+#              with:
+#                  args: "A new Ralph version has been deployed to production.\n${{ steps.multi-line.outputs.log }}"
