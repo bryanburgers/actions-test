@@ -35,15 +35,14 @@ jobs:
               run: git fetch --tags
 
             - name: "Generate all the things"
-              working-directory: ./ralph
               run: |
                   # Get the message
-                  version=$(git describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||')
+                  version=$(git -C ralph describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||')
                   message="Ralph $version has been deployed to production"
                   echo $message | jq -R '{"message":.}' >message.json
 
                   # Concat all of the commits since the last merge to master
-                  git log --pretty=format:"* %s" --no-merges HEAD~8..HEAD | grep -v "cargo-release" | jq -Rn '[inputs]|join("\n")|{"log":.}' >git-log.json
+                  git -C ralph log --pretty=format:"* %s" --no-merges HEAD~8..HEAD | grep -v "cargo-release" | jq -Rn '[inputs]|join("\n")|{"log":.}' >git-log.json
 
                   # Join those together into the payload
                   jq -n --argfile m message.json --argfile l git-log.json '$m.message + "\n" + $l.log|{"text":.}' >payload.json
