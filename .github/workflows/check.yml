@@ -51,4 +51,4 @@ jobs:
               env:
                   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
               with:
-                  args: 'A new Ralph version has been deployed to production.\n${{ steps.multi-line.outputs.log }}'
+                  args: "A new Ralph version has been deployed to production.\n${{ steps.multi-line.outputs.log }}"
