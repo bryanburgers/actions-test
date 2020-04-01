@@ -24,40 +24,31 @@ jobs:
             - name: checkout
               uses: actions/checkout@v2
               with:
+                  path: ralph
                   fetch-depth: 0
-
-            - name: Output git log
-              run: git log --pretty=format:"* %s"
-
-#            - name: Make git log an output?
-#              id: generate-log
-#              run: |
-#                  output=$(git log --pretty=format:"* %s")
-#                  echo "::set-output name=log::$output"
-#
-#            - name: Test output
-#              run: echo ${{ steps.generate-log.outputs.log }}
-
-            - name: Test a multi-line output with newlines?
-              id: multi-line
-              run: |
-                  echo "::set-output name=log::one\\ntwo\\nthree"
-
-            - name: Test output
-              run: echo '"${{ steps.multi-line.outputs.log }}"'
 
             - name: Install curl, jq
               run: sudo apt-get install -y curl jq
 
             - name: Fetch tags
+              working-directory: ./ralph
               run: git fetch --tags
 
             - name: "Generate all the things"
+              working-directory: ./ralph
               run: |
-                  message="Ralph $(git describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||') has been deployed to production"
+                  # Get the message
+                  version=$(git describe --abbrev=0 --match='ralph_lambda-*' | sed -e 's|ralph_lambda-||')
+                  message="Ralph $version has been deployed to production"
                   echo $message | jq -R '{"message":.}' >message.json
+
+                  # Concat all of the commits since the last merge to master
                   git log --pretty=format:"* %s" --no-merges HEAD~8..HEAD | grep -v "cargo-release" | jq -Rn '[inputs]|join("\n")|{"log":.}' >git-log.json
+
+                  # Join those together into the payload
                   jq -n --argfile m message.json --argfile l git-log.json '$m.message + "\n" + $l.log|{"text":.}' >payload.json
+
+                  # And post it to Slack
                   curl -X POST --data-urlencode payload@payload.json ${{ secrets.SLACK_WEBHOOK }}
 
 #            - name: Slack Notification
